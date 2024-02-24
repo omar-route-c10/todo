@@ -1,24 +1,63 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static Color primaryColor = Color(0xFF5D9CEC);
-  static Color backgroundColorLight = Color(0xFFDFECDB);
-  static Color backgroundColorDark = Color(0xFF060E1E);
-  static Color greenColor = Color(0xFF61E757);
-  static Color redColor = Color(0xFFEC4B4B);
-  static Color blackColor = Color(0xFF141922);
-  static Color greyColor = Color(0xFFC8C9CB);
-  static Color whiteColor = Color(0xFFFFFFFF);
+  static const Color primaryColor = Color(0xFF5D9CEC);
+  static const Color backgroundColorLight = Color(0xFFDFECDB);
+  static const Color backgroundColorDark = Color(0xFF060E1E);
+  static const Color greenColor = Color(0xFF61E757);
+  static const Color redColor = Color(0xFFEC4B4B);
+  static const Color blackColor = Color(0xFF141922);
+  static const Color greyColor = Color(0xFFC8C9CB);
+  static const Color whiteColor = Color(0xFFFFFFFF);
 
   static ThemeData lightTheme = ThemeData(
-    appBarTheme: AppBarTheme(
+    primaryColor: primaryColor,
+    appBarTheme: const AppBarTheme(
       backgroundColor: primaryColor,
+      titleTextStyle: TextStyle(
+        color: whiteColor,
+        fontWeight: FontWeight.bold,
+        fontSize: 22,
+      ),
     ),
     scaffoldBackgroundColor: backgroundColorLight,
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+      selectedItemColor: primaryColor,
+      unselectedItemColor: greyColor,
+    ),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: primaryColor,
+      foregroundColor: whiteColor,
+      shape: CircleBorder(
+        side: BorderSide(
+          color: whiteColor,
+          width: 4,
+        ),
+      ),
+    ),
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w400,
+        color: blackColor,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: primaryColor,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: blackColor,
+      ),
+    ),
   );
 
   static ThemeData darkTheme = ThemeData(
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       backgroundColor: primaryColor,
     ),
     scaffoldBackgroundColor: backgroundColorDark,
