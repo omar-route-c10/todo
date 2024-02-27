@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_calendar/timeline/flutter_timeline_calendar.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/tabs/tasks/task_item.dart';
+import 'package:todo/tabs/tasks/tasks_provider.dart';
 
 class TasksTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final tasksProvider = Provider.of<TasksProvider>(context);
     return Column(
       children: [
         TimelineCalendar(
@@ -29,15 +32,20 @@ class TasksTab extends StatelessWidget {
             backgroundColor: Theme.of(context).primaryColor,
             headerTextColor: Colors.black,
           ),
-          onChangeDateTime: (datetime) {
-            print(datetime.getDate());
+          dateTime: CalendarDateTime(
+            year: tasksProvider.selectedDate.year,
+            month: tasksProvider.selectedDate.month,
+            day: tasksProvider.selectedDate.day,
+          ),
+          onChangeDateTime: (calendarDatetime) {
+            tasksProvider.changeSelectedDate(calendarDatetime.toDateTime());
           },
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Expanded(
           child: ListView.builder(
-            itemBuilder: (context, index) => TaskItem(),
-            itemCount: 10,
+            itemBuilder: (_, index) => TaskItem(tasksProvider.tasks[index]),
+            itemCount: tasksProvider.tasks.length,
           ),
         ),
       ],

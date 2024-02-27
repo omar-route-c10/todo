@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/app_theme.dart';
+import 'package:todo/firebase_utils.dart';
+import 'package:todo/models/task_model.dart';
 import 'package:todo/tabs/tasks/default_elevated_button.dart';
 import 'package:todo/tabs/tasks/default_text_form_field.dart';
+import 'package:todo/tabs/tasks/tasks_provider.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
   @override
@@ -52,13 +56,16 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   context: context,
                   firstDate: DateTime.now(),
                   lastDate: DateTime.now().add(const Duration(days: 365)),
-                  initialDate: DateTime.now(),
+                  initialDate: selectedDate,
                   initialEntryMode: DatePickerEntryMode.calendarOnly,
                 );
-                if (dateTime != null) selectedDate = dateTime;
+                if (dateTime != null) {
+                  selectedDate = dateTime;
+                  setState(() {});
+                }
               },
               child: Text(
-                dateFormat.format(DateTime.now()),
+                dateFormat.format(selectedDate),
                 style: textTheme.bodySmall,
               ),
             ),
@@ -73,5 +80,23 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
     );
   }
 
-  void addTask() {}
+  void addTask() {
+    FirebaseUtils.addTaskToFirestore(
+      TaskModel(
+        title: titleController.text,
+        description: descriptionController.text,
+        dateTime: selectedDate,
+      ),
+    ).timeout(
+      const Duration(milliseconds: 500),
+      onTimeout: () {
+        Provider.of<TasksProvider>(context, listen: false).getTasks();
+        Navigator.of(context).pop();
+        print('Success');
+      },
+    ).catchError((e) {
+      Navigator.of(context).pop();
+      print('Error, try again!');
+    });
+  }
 }
