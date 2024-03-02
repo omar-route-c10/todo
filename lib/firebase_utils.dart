@@ -22,5 +22,8 @@ class FirebaseUtils {
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
 
-  static void deleteTaskFromFirestore(String taskId) {}
+  static Future<void> deleteTaskFromFirestore(String taskId) {
+    final tasksCollection = getTasksCollection();
+    return tasksCollection.doc(taskId).delete();
+  }
 }

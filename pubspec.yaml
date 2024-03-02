@@ -17,6 +17,8 @@ dependencies:
   flutter_timeline_calendar: ^1.0.9
   firebase_core: ^2.25.4
   cloud_firestore: ^4.15.5
+  fluttertoast: ^8.2.4
+  flutter_slidable: ^3.0.1
 
 dev_dependencies:
   flutter_test:
