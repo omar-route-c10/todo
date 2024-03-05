@@ -37,7 +37,35 @@ class AppTheme {
         ),
       ),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        textStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w300,
+        ),
+        foregroundColor: AppTheme.blackColor,
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: greyColor.withOpacity(0.8),
+          width: 1,
+        ),
+      ),
+      focusedBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: primaryColor,
+          width: 2,
+        ),
+      ),
+    ),
     textTheme: const TextTheme(
+      titleMedium: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: blackColor,
+      ),
       bodyLarge: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w400,

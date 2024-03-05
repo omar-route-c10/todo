@@ -3,12 +3,12 @@ import 'package:todo/app_theme.dart';
 
 class DefaultElevatedButton extends StatelessWidget {
   DefaultElevatedButton({
-    required this.label,
     required this.onPressed,
+    required this.child,
   });
 
-  String label;
   VoidCallback onPressed;
+  Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +17,11 @@ class DefaultElevatedButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).primaryColor,
         fixedSize: Size(MediaQuery.of(context).size.width, 50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
       ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.whiteColor,
-            ),
-      ),
+      child: child,
     );
   }
 }

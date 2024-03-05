@@ -17,6 +17,7 @@ class AddTaskBottomSheet extends StatefulWidget {
 class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
   var selectedDate = DateTime.now();
 
   @override
@@ -27,83 +28,106 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
       height: MediaQuery.of(context).size.height * 0.55,
       padding: const EdgeInsets.all(16),
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Text(
-              'Add New Task',
-              style: textTheme.bodyMedium?.copyWith(color: AppTheme.blackColor),
-            ),
-            DefaultTextFormField(
-              controller: titleController,
-              hintText: 'Enter task title',
-            ),
-            const SizedBox(height: 16),
-            DefaultTextFormField(
-              controller: descriptionController,
-              hintText: 'Enter task description',
-              maxLines: 5,
-            ),
-            const SizedBox(height: 16),
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(
-                'Selected Date',
-                style: textTheme.bodyLarge,
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              Text(
+                'Add New Task',
+                style:
+                    textTheme.bodyMedium?.copyWith(color: AppTheme.blackColor),
               ),
-            ),
-            InkWell(
-              onTap: () async {
-                final dateTime = await showDatePicker(
-                  context: context,
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime.now().add(const Duration(days: 365)),
-                  initialDate: selectedDate,
-                  initialEntryMode: DatePickerEntryMode.calendarOnly,
-                );
-                if (dateTime != null) {
-                  selectedDate = dateTime;
-                  setState(() {});
-                }
-              },
-              child: Text(
-                dateFormat.format(selectedDate),
-                style: textTheme.bodySmall,
+              DefaultTextFormField(
+                controller: titleController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Title can not be empty';
+                  }
+                  return null;
+                },
+                hintText: 'Enter task title',
               ),
-            ),
-            const SizedBox(height: 20),
-            DefaultElevatedButton(
-              label: 'Add',
-              onPressed: addTask,
-            ),
-          ],
+              const SizedBox(height: 16),
+              DefaultTextFormField(
+                controller: descriptionController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Description can not be empty';
+                  }
+                  return null;
+                },
+                hintText: 'Enter task description',
+                maxLines: 5,
+              ),
+              const SizedBox(height: 16),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(
+                  'Selected Date',
+                  style: textTheme.bodyLarge,
+                ),
+              ),
+              InkWell(
+                onTap: () async {
+                  final dateTime = await showDatePicker(
+                    context: context,
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                    initialDate: selectedDate,
+                    initialEntryMode: DatePickerEntryMode.calendarOnly,
+                  );
+                  if (dateTime != null) {
+                    selectedDate = dateTime;
+                    setState(() {});
+                  }
+                },
+                child: Text(
+                  dateFormat.format(selectedDate),
+                  style: textTheme.bodySmall,
+                ),
+              ),
+              const SizedBox(height: 20),
+              DefaultElevatedButton(
+                onPressed: addTask,
+                child: Text(
+                  'Add',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppTheme.whiteColor,
+                      ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   void addTask() {
-    FirebaseUtils.addTaskToFirestore(
-      TaskModel(
-        title: titleController.text,
-        description: descriptionController.text,
-        dateTime: selectedDate,
-      ),
-    ).timeout(
-      const Duration(milliseconds: 500),
-      onTimeout: () {
-        Provider.of<TasksProvider>(context, listen: false).getTasks();
+    if (formKey.currentState?.validate() == true) {
+      FirebaseUtils.addTaskToFirestore(
+        TaskModel(
+          title: titleController.text,
+          description: descriptionController.text,
+          dateTime: selectedDate,
+        ),
+      ).timeout(
+        const Duration(milliseconds: 500),
+        onTimeout: () {
+          Provider.of<TasksProvider>(context, listen: false).getTasks();
+          Navigator.of(context).pop();
+          Fluttertoast.showToast(
+            msg: "Task added successfully",
+            toastLength: Toast.LENGTH_SHORT,
+          );
+        },
+      ).catchError((_) {
         Navigator.of(context).pop();
         Fluttertoast.showToast(
-          msg: "Task added successfully",
+          msg: "Something went wrong!",
           toastLength: Toast.LENGTH_SHORT,
         );
-      },
-    ).catchError((_) {
-      Navigator.of(context).pop();
-      Fluttertoast.showToast(
-        msg: "Something went wrong!",
-        toastLength: Toast.LENGTH_SHORT,
-      );
-    });
+      });
+    }
   }
 }

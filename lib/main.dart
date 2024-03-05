@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/app_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo/auth/login_screen.dart';
+import 'package:todo/auth/register_screen.dart';
 import 'package:todo/home_screen.dart';
 import 'package:todo/tabs/settings/settings_provider.dart';
 import 'package:todo/tabs/tasks/tasks_provider.dart';
@@ -43,7 +45,10 @@ class TodoApp extends StatelessWidget {
       locale: Locale(settingsProvider.languageCode),
       routes: {
         HomeScreen.routeName: (_) => HomeScreen(),
+        LoginScreen.routeName: (_) => LoginScreen(),
+        RegisterScreen.routeName: (_) => RegisterScreen(),
       },
+      initialRoute: LoginScreen.routeName,
     );
   }
 }
