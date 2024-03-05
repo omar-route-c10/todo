@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_timeline_calendar/timeline/flutter_timeline_calendar.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/auth/user_provider.dart';
 import 'package:todo/tabs/tasks/task_item.dart';
 import 'package:todo/tabs/tasks/tasks_provider.dart';
 
-class TasksTab extends StatelessWidget {
+class TasksTab extends StatefulWidget {
+  @override
+  State<TasksTab> createState() => _TasksTabState();
+}
+
+class _TasksTabState extends State<TasksTab> {
+  late String userId;
+  late TasksProvider tasksProvider;
+  bool shouldGetTasks = true;
+
   @override
   Widget build(BuildContext context) {
-    final tasksProvider = Provider.of<TasksProvider>(context);
+    if (shouldGetTasks) {
+      userId = Provider.of<UserProvider>(context).currentUser!.id;
+      tasksProvider = Provider.of<TasksProvider>(context)..getTasks(userId);
+      shouldGetTasks = false;
+    }
     return Column(
       children: [
         TimelineCalendar(
@@ -38,7 +52,10 @@ class TasksTab extends StatelessWidget {
             day: tasksProvider.selectedDate.day,
           ),
           onChangeDateTime: (calendarDatetime) {
-            tasksProvider.changeSelectedDate(calendarDatetime.toDateTime());
+            tasksProvider.changeSelectedDate(
+              calendarDatetime.toDateTime(),
+              userId,
+            );
           },
         ),
         const SizedBox(height: 8),

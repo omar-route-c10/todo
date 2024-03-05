@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/app_theme.dart';
+import 'package:todo/auth/login_screen.dart';
+import 'package:todo/auth/user_provider.dart';
+import 'package:todo/firebase_utils.dart';
 import 'package:todo/tabs/settings/settings_tab.dart';
 import 'package:todo/tabs/tasks/add_task_bottom_sheet.dart';
+import 'package:todo/tabs/tasks/tasks_provider.dart';
 import 'package:todo/tabs/tasks/tasks_tab.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -30,6 +36,22 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsetsDirectional.only(start: 20),
           child: Text(appBarTitles[currentIndex]),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              FirebaseUtils.logout();
+              Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
+              Provider.of<TasksProvider>(context, listen: false).clear();
+              Provider.of<UserProvider>(context, listen: false).currentUser =
+                  null;
+            },
+            icon: const Icon(
+              Icons.logout_outlined,
+              color: AppTheme.whiteColor,
+              size: 32,
+            ),
+          ),
+        ],
       ),
       body: tabs[currentIndex],
       bottomNavigationBar: BottomAppBar(

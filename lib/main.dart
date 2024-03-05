@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +5,7 @@ import 'package:todo/app_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:todo/auth/login_screen.dart';
 import 'package:todo/auth/register_screen.dart';
+import 'package:todo/auth/user_provider.dart';
 import 'package:todo/home_screen.dart';
 import 'package:todo/tabs/settings/settings_provider.dart';
 import 'package:todo/tabs/tasks/tasks_provider.dart';
@@ -13,9 +13,6 @@ import 'package:todo/tabs/tasks/tasks_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await FirebaseFirestore.instance.disableNetwork();
-  FirebaseFirestore.instance.settings =
-      const Settings(cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED);
   runApp(
     MultiProvider(
       providers: [
@@ -23,7 +20,10 @@ void main() async {
           create: (_) => SettingsProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => TasksProvider()..getTasks(),
+          create: (_) => UserProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => TasksProvider(),
         ),
       ],
       child: TodoApp(),
